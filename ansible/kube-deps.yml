@@ -1,43 +1,56 @@
 - hosts: all
+  remote_user: deploy
   become: yes
-  
-  
+  become_method: sudo
+  become_user: root
+  gather_facts: yes
+
+
   tasks:
- 
-  - name: install Aptitude
-    apt:
-      name: aptitude
-      state: present
-      update_cache: true
 
-  - name: install Docker
-    apt:
-      name: docker.io
-      state: present
-      update_cache: false
+   - name: install Aptitude
+     apt:
+       name: aptitude
+       state: present
+       update_cache: true
 
-  - name: Install Transport HTTPS
-    apt:
-      name: apt-transport-https
-      state: present
+   - name: Install Docker
+     apt:
+       name:
+         - docker-ce
+         - docker-ce-cli
+         - containerd.io
+       state: present
 
-  - name: install kubelet
-    apt:
-      name: kubelet
-      state: present
-      update_cache: false
+   - name: Installing Prerequisites for Kubernetes
+     apt:
+       name:
+         - apt-transport-https
+         - ca-certificates
+         - curl
+         - gnupg-agent
+         - vim
+         - software-properties-common
+       state: present
 
-  - name: install kubeadm
-    apt:
-      name: kubeadm
-      state: present
+   - name: install kubelet
+     apt:
+       name: kubelet
+       state: present
+       update_cache: false
+
+   - name: install kubeadm
+     apt:
+       name: kubeadm
+       state: present
 
 - hosts: master1
   become: yes
   tasks:
 
-- name: install kubectl
-  apt:
-  name: kubectl
-  state: present
-  force: yes
+   - name: install kubectl
+     apt:
+       name: kubectl
+       state: present
+       force: yes
+
